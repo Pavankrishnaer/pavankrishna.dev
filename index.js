@@ -311,7 +311,7 @@ async function loadVisitorCount() {
   if (!el) return;
   try {
     if (COUNTER_URL) {
-      const res = await fetch(COUNTER_URL, { method: 'POST' });
+      const res = await fetch(COUNTER_URL, { method: 'GET' });
       const data = await res.json();
       el.textContent = data.count.toLocaleString();
     } else {

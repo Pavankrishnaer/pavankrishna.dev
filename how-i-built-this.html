@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How I Built This Portfolio - Pavankrishna</title>
+  <meta name="description" content="How I built and deployed pavankrishna.dev on AWS using Amplify, CloudFront, ACM, IAM, GitHub CI/CD and Namecheap DNS.">
+  <meta property="og:title" content="How I Built pavankrishna.dev on AWS">
+  <meta property="og:description" content="A technical breakdown of the AWS Amplify deployment, custom domain setup, SSL, IAM permissions and CI/CD workflow behind this portfolio.">
+  <meta property="og:image" content="https://pavankrishna.dev/og-image.png">
+  <meta property="og:url" content="https://pavankrishna.dev/how-i-built-this.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="How I Built pavankrishna.dev on AWS">
+  <meta name="twitter:description" content="AWS Amplify, CloudFront, ACM, IAM, GitHub CI/CD and Namecheap DNS explained as a portfolio case study.">
+  <meta name="twitter:image" content="https://pavankrishna.dev/og-image.png">
+  <link rel="canonical" href="https://pavankrishna.dev/how-i-built-this.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Funnel+Sans:wght@700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="case-study.css">
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      document.documentElement.setAttribute('data-theme', saved || 'dark');
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="site-nav"></div>
+
+  <div class="case-glow" aria-hidden="true"></div>
+
+  <header class="case-hero">
+    <a class="case-back" href="index.html#projects">← Back to projects</a>
+    <h1>From Code to Cloud: Building <em>pavankrishna.dev</em> on AWS Amplify</h1>
+    <p>
+      This isn't just a portfolio. It's a fully deployed cloud project built on AWS, served via CloudFront, secured
+      with ACM, and continuously deployed from GitHub. Here's exactly how I built it, what went wrong, and what I
+      learned.
+    </p>
+    <div class="service-pills" aria-label="Services used">
+      <span>AWS Amplify</span>
+      <span>CloudFront</span>
+      <span>ACM (SSL)</span>
+      <span>IAM</span>
+      <span>GitHub</span>
+      <span>CI/CD</span>
+      <span>Namecheap DNS</span>
+    </div>
+  </header>
+
+  <main class="case-main">
+    <section class="case-section case-section-wide reveal">
+      <div class="section-heading">
+        <span>Architecture Visualization</span>
+      </div>
+      <div class="architecture-card">
+        <div class="architecture-flow">
+          <div class="architecture-node">
+            <div class="architecture-icon">👨‍💻</div>
+            <strong>Local Code</strong>
+            <span>HTML / CSS / JS</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">🐙</div>
+            <strong>GitHub Repository</strong>
+            <span>Source of truth</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node architecture-node-primary">
+            <div class="architecture-icon">⚡</div>
+            <strong>AWS Amplify</strong>
+            <span>CI/CD and hosting</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">🌐</div>
+            <strong>CloudFront CDN</strong>
+            <span>Global delivery</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">🔒</div>
+            <strong>ACM SSL</strong>
+            <span>Managed HTTPS</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">🌍</div>
+            <strong>Namecheap DNS</strong>
+            <span>pavankrishna.dev</span>
+          </div>
+        </div>
+        <p>Every git push triggers an automatic build and deploy. No manual steps are needed.</p>
+      </div>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>The Strategic Why</span>
+      </div>
+      <h2>Why AWS instead of Netlify or Vercel?</h2>
+      <p>
+        Netlify and Vercel are excellent platforms. They are faster to set up and completely free for personal projects.
+        So why go through the effort of deploying on AWS?
+      </p>
+      <p>
+        The honest answer: <strong>I'm transitioning into cloud engineering.</strong> Deploying on AWS, even for a static site, forces me to understand IAM, SSL certificates, CDN configuration, and CI/CD pipelines in a way that
+        clicking "deploy" on Netlify never would. Every friction point is a learning opportunity.
+      </p>
+      <blockquote>
+        When a recruiter or hiring manager visits pavankrishna.dev, they're not just reading about my AWS skills. They're loading a site that runs on AWS infrastructure I configured myself. That's a different kind of
+        credibility.
+      </blockquote>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Execution Timeline</span>
+      </div>
+      <h2>Step by step breakdown</h2>
+      <p class="section-intro">Here's exactly what I did, in order, to get from a local HTML file to a live HTTPS
+        website.</p>
+      <div class="timeline-grid">
+        <article class="timeline-card">
+          <div class="timeline-number">01</div>
+          <h3>Built the portfolio as static HTML/CSS/JS</h3>
+          <p>The entire site is plain HTML, CSS and JavaScript, with no frameworks, no build tools and no dependencies. This
+            keeps it fast, simple to deploy, and easy to maintain. Files include index.html, impressum.html,
+            privacy.html, common.css, index.css, legal.css, common.js and index.js.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">02</div>
+          <h3>Created an IAM user with least privilege</h3>
+          <p>Instead of using the root AWS account, I created a dedicated IAM user called
+            <strong>amplify-deploy</strong> with only the permissions needed: AdministratorAccess-Amplify and
+            AmazonRoute53FullAccess. This follows the principle of least privilege, a core AWS security best practice.
+          </p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">03</div>
+          <h3>Pushed code to a GitHub repository</h3>
+          <p>Initialised a git repository, committed all files and pushed to GitHub. This is the source of truth. Amplify watches this repository and deploys automatically on every push.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">04</div>
+          <h3>Connected GitHub to AWS Amplify</h3>
+          <p>In the Amplify console, I connected the GitHub repository, selected the main branch, and let Amplify
+            auto-detect the build settings. Since this is plain HTML with no build command needed, the output directory
+            was simply set to <strong>/</strong>.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">05</div>
+          <h3>Deployed with the first build completed in under 3 minutes</h3>
+          <p>Amplify built and deployed the site automatically, assigning a temporary URL at
+            <strong>main.xxxxx.amplifyapp.com</strong>. The site was already live and served over HTTPS via CloudFront
+            at this point.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">06</div>
+          <h3>Configured custom domain via Manual DNS</h3>
+          <p>Added the custom domain <strong>pavankrishna.dev</strong> in Amplify using Manual configuration (not Route
+            53 automatic setup, due to Free Tier limitations). Amplify provided two DNS records to add in Namecheap: one CNAME for SSL verification and one ALIAS record pointing the apex domain to CloudFront.</p>
+        </article>
+        <article class="timeline-card timeline-card-wide">
+          <div class="timeline-number">07</div>
+          <h3>Added DNS records in Namecheap</h3>
+          <p>Deleted the existing parking page records in Namecheap Advanced DNS, then added the two records from
+            Amplify. DNS propagation completed within a few minutes and the domain was live at
+            <strong>pavankrishna.dev</strong> with a valid SSL certificate.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>Obstacles &amp; Solutions</span>
+      </div>
+      <h2>Challenges and how I solved them</h2>
+      <p>Nothing goes perfectly on the first try. Here are the real problems I hit and how I fixed them.</p>
+
+      <div class="challenge-stack">
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>IAM user not authorised for Route 53</h3>
+            <p>When trying to add the custom domain, Amplify threw an error: <em>"User amplify-deploy is not authorized
+                to perform route53:ListHostedZones"</em>. The automatic hosted zone creation failed because my IAM user
+              didn't have Route 53 permissions.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>Went to IAM → Users → amplify-deploy → Add permissions → Attached
+              <strong>AmazonRoute53FullAccess</strong> policy. Then retried the domain activation in Amplify. It worked
+              immediately.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>Free Tier does not support automatic hosted zone creation</h3>
+            <p>Amplify's recommended "Create hosted zone on Route 53" option was blocked with the error:
+              <em>"Free Tier accounts are not supported for this service"</em>. This prevented the one-click domain
+              setup.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>Switched to <strong>Manual configuration</strong> instead. This meant manually copying the DNS records
+              Amplify provided and adding them in Namecheap's Advanced DNS panel. More steps, but it works perfectly and
+              costs nothing extra.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>Existing DNS records in Namecheap conflicted</h3>
+            <p>Namecheap had two default records on the domain: a CNAME pointing to their parking page and a URL
+              redirect record. These would have conflicted with the new Amplify records.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>Deleted both existing records first, then added the two Amplify records cleanly. Order matters here. Always remove conflicting records before adding new ones.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Financial Breakdown</span>
+      </div>
+      <h2>What does this actually cost?</h2>
+      <p class="section-intro">One of the most practical questions in cloud engineering: what's the bill? Here's the
+        honest breakdown for running this portfolio on AWS.</p>
+      <div class="cost-panel">
+        <table class="cost-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>What it does</th>
+              <th>Monthly cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>AWS Amplify Hosting</td>
+              <td>Build minutes + hosting (free tier: 1000 build mins/month, 15 GB served)</td>
+              <td>~€0</td>
+            </tr>
+            <tr>
+              <td>CloudFront CDN</td>
+              <td>Content delivery, which Amplify uses automatically</td>
+              <td>~€0</td>
+            </tr>
+            <tr>
+              <td>ACM SSL Certificate</td>
+              <td>HTTPS, free when used with CloudFront</td>
+              <td>€0</td>
+            </tr>
+            <tr>
+              <td>IAM</td>
+              <td>User and permissions management</td>
+              <td>€0</td>
+            </tr>
+            <tr>
+              <td>Domain (Namecheap)</td>
+              <td>pavankrishna.dev, 3 year registration</td>
+              <td>~€4/month</td>
+            </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td>Full HTTPS portfolio on AWS global CDN</td>
+              <td>~€4/month</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cost-note">The AWS costs are effectively zero within free tier limits. For a personal portfolio with low
+        traffic, this will stay free for a long time. The only real cost is the domain registration, which would be the
+        same on any platform.</p>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Key Technical Takeaways</span>
+      </div>
+      <h2>What I learned</h2>
+      <div class="learning-grid">
+        <article class="learning-card">
+          <span>🔐</span>
+          <h3>IAM least privilege is non-negotiable</h3>
+          <p>Never use the root account for deployments. Creating a dedicated IAM user with only the permissions needed
+            is the right habit to build from day one.</p>
+        </article>
+        <article class="learning-card">
+          <span>🔁</span>
+          <h3>CI/CD changes how you think about code</h3>
+          <p>When every git push deploys automatically, you start committing more carefully and thinking about changes
+            in smaller, safer increments.</p>
+        </article>
+        <article class="learning-card">
+          <span>🌐</span>
+          <h3>DNS errors are almost always fixable</h3>
+          <p>The Route 53 permission error looked scary at first. But reading the error message carefully pointed
+            directly to the fix: attach the right IAM policy and retry.</p>
+        </article>
+        <article class="learning-card">
+          <span>⚡</span>
+          <h3>Amplify abstracts a lot of complexity</h3>
+          <p>Under the hood, Amplify is running S3, CloudFront and ACM. Understanding what those services do makes you a
+            better user of the abstraction layer on top.</p>
+        </article>
+        <article class="learning-card">
+          <span>💰</span>
+          <h3>Cloud doesn't have to be expensive</h3>
+          <p>A globally distributed, HTTPS-secured, auto-deploying website costs effectively nothing on AWS free tier.
+            Understanding the billing model is as important as understanding the architecture.</p>
+        </article>
+        <article class="learning-card">
+          <span>📖</span>
+          <h3>Document everything as you go</h3>
+          <p>Writing this page forced me to fully understand every step I took. If you can't explain it clearly, you
+            don't fully understand it yet.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="common.js"></script>
+  <script src="case-study.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serverless Visitor Counter - Pavankrishna</title>
+  <meta name="description"
+    content="How I built a real-time serverless visitor counter using AWS Lambda, API Gateway, DynamoDB, Python, IAM and CORS.">
+  <meta property="og:title" content="Serverless Visitor Counter on AWS">
+  <meta property="og:description"
+    content="A technical breakdown of the Lambda, API Gateway and DynamoDB visitor counter behind pavankrishna.dev.">
+  <meta property="og:image" content="https://pavankrishna.dev/og-image.png">
+  <meta property="og:url" content="https://pavankrishna.dev/serverless-visitor-counter.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Serverless Visitor Counter on AWS">
+  <meta name="twitter:description"
+    content="Lambda, API Gateway, DynamoDB, Python, IAM and CORS explained as a portfolio case study.">
+  <meta name="twitter:image" content="https://pavankrishna.dev/og-image.png">
+  <link rel="canonical" href="https://pavankrishna.dev/serverless-visitor-counter.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Funnel+Sans:wght@700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="case-study.css">
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      document.documentElement.setAttribute('data-theme', saved || 'dark');
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="site-nav"></div>
+
+  <div class="case-glow" aria-hidden="true"></div>
+
+  <header class="case-hero">
+    <a class="case-back" href="index.html#projects">← Back to projects</a>
+    <h1>Serverless Visitor Counter with <em>Lambda, API Gateway</em> and DynamoDB</h1>
+    <p>
+      The visitor count on my portfolio is not hardcoded. It is a real-time serverless counter built on AWS. Every visit
+      triggers a Lambda function, increments a DynamoDB record, and returns the live count.
+    </p>
+    <div class="service-pills" aria-label="Services used">
+      <span>AWS Lambda</span>
+      <span>API Gateway</span>
+      <span>DynamoDB</span>
+      <span>Python 3.12</span>
+      <span>IAM</span>
+      <span>CORS</span>
+    </div>
+  </header>
+
+  <main class="case-main">
+    <section class="case-section case-section-wide reveal">
+      <div class="section-heading">
+        <span>Architecture Visualization</span>
+      </div>
+      <div class="architecture-card">
+        <div class="architecture-flow">
+          <div class="architecture-node">
+            <div class="architecture-icon">🌍</div>
+            <strong>Browser Visit</strong>
+            <span>Portfolio page load</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">🌐</div>
+            <strong>API Gateway</strong>
+            <span>GET /count route</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node architecture-node-primary">
+            <div class="architecture-icon">⚡</div>
+            <strong>AWS Lambda</strong>
+            <span>Python function</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">🗄️</div>
+            <strong>DynamoDB</strong>
+            <span>Atomic counter</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">🔢</div>
+            <strong>Live Count</strong>
+            <span>JSON response</span>
+          </div>
+        </div>
+        <p>Every visit triggers this serverless pipeline and returns the latest count without running a traditional backend server.</p>
+      </div>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>The Strategic Why</span>
+      </div>
+      <h2>Why serverless for a visitor counter?</h2>
+      <p>
+        A visitor counter is a small feature, but it demonstrates a complete serverless architecture where
+        <strong>every component is managed by AWS</strong> with no server maintenance.
+      </p>
+      <p>
+        With a traditional backend, I would need a server running continuously, a database to manage, and infrastructure
+        to patch and monitor. With serverless, the Lambda function only runs when someone visits. No traffic means no
+        compute cost. No servers means less operational overhead.
+      </p>
+      <blockquote>
+        For a portfolio site with irregular traffic, serverless is a practical fit: available on demand, simple to scale,
+        and extremely low cost at this size.
+      </blockquote>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Execution Timeline</span>
+      </div>
+      <h2>Step by step breakdown</h2>
+      <p class="section-intro">Here is the path from a static portfolio page to a working AWS-powered visitor counter.</p>
+
+      <div class="timeline-grid">
+        <article class="timeline-card">
+          <div class="timeline-number">01</div>
+          <h3>Created the DynamoDB table</h3>
+          <p>Created a table named <strong>visitor-counter</strong> with a partition key of <strong>id</strong>. DynamoDB
+            works well here because the project only needs one record that stores the running count.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">02</div>
+          <h3>Created the Lambda function in Python</h3>
+          <p>Created a Lambda function named <strong>visitor-counter</strong> with the Python 3.12 runtime. The function
+            uses boto3 to update DynamoDB whenever the endpoint is called.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">03</div>
+          <h3>Attached DynamoDB permissions to Lambda</h3>
+          <p>Lambda functions run under an IAM role. I attached DynamoDB access to the execution role so the function
+            could read and write the visitor counter table.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">04</div>
+          <h3>Created an HTTP API in API Gateway</h3>
+          <p>Created an HTTP API named <strong>visitor-counter-api</strong> with a <strong>GET /count</strong> route.
+            API Gateway receives the browser request, invokes Lambda, and returns the response.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">05</div>
+          <h3>Connected API Gateway to Lambda</h3>
+          <p>Attached a Lambda integration to the GET /count route so API Gateway knows which function should handle the
+            request.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">06</div>
+          <h3>Updated the portfolio JavaScript</h3>
+          <p>Replaced the placeholder counter URL in <strong>index.js</strong> with the API Gateway invoke URL. The
+            portfolio now calls the API on page load and renders the live count.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>The Code</span>
+      </div>
+      <h2>Lambda function code</h2>
+      <p>The backend logic is small, but it covers the core ideas: AWS SDK access, atomic DynamoDB updates, JSON output
+        and CORS headers.</p>
+
+      <div class="code-panel">
+        <div class="code-label">lambda_function.py - Python 3.12</div>
+        <code><span class="c-key">import</span> json
+<span class="c-key">import</span> boto3
+
+<span class="c-comment"># Connect to DynamoDB. boto3 uses the Lambda execution role credentials.</span>
+dynamodb = boto3.<span class="c-fn">resource</span>(<span class="c-str">'dynamodb'</span>)
+table = dynamodb.<span class="c-fn">Table</span>(<span class="c-str">'visitor-counter'</span>)
+
+<span class="c-key">def</span> <span class="c-fn">lambda_handler</span>(event, context):
+    <span class="c-comment"># Atomic increment: thread-safe and protected from race conditions.</span>
+    response = table.<span class="c-fn">update_item</span>(
+        Key={<span class="c-str">'id'</span>: <span class="c-str">'visitors'</span>},
+        UpdateExpression=<span class="c-str">'ADD #count :increment'</span>,
+        ExpressionAttributeNames={<span class="c-str">'#count'</span>: <span class="c-str">'count'</span>},
+        ExpressionAttributeValues={<span class="c-str">':increment'</span>: <span class="c-num">1</span>},
+        ReturnValues=<span class="c-str">'UPDATED_NEW'</span>
+    )
+
+    count = <span class="c-fn">int</span>(response[<span class="c-str">'Attributes'</span>][<span class="c-str">'count'</span>])
+
+    <span class="c-key">return</span> {
+        <span class="c-str">'statusCode'</span>: <span class="c-num">200</span>,
+        <span class="c-str">'headers'</span>: {
+            <span class="c-comment"># CORS: only allow requests from the portfolio domain.</span>
+            <span class="c-str">'Access-Control-Allow-Origin'</span>: <span class="c-str">'https://pavankrishna.dev'</span>,
+            <span class="c-str">'Access-Control-Allow-Methods'</span>: <span class="c-str">'GET'</span>,
+            <span class="c-str">'Content-Type'</span>: <span class="c-str">'application/json'</span>
+        },
+        <span class="c-str">'body'</span>: json.<span class="c-fn">dumps</span>({<span class="c-str">'count'</span>: count})
+    }
+</code>
+      </div>
+
+      <p>
+        <strong>Why use ADD instead of GET then SET?</strong> DynamoDB's <code>ADD</code> operation increments the value
+        in one atomic operation. If two visitors arrive at the same time, both increments are counted correctly.
+      </p>
+      <p>
+        <strong>Why use ExpressionAttributeNames?</strong> The word <code>count</code> is reserved in DynamoDB. Using
+        <code>#count</code> as an alias avoids a syntax error.
+      </p>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>Obstacles &amp; Solutions</span>
+      </div>
+      <h2>Challenges and how I fixed them</h2>
+
+      <div class="challenge-stack">
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>IAM user lacked permissions</h3>
+            <p>When trying to attach a policy to the Lambda execution role, the console returned an access denied error.
+              The deployment IAM user did not have permission to manage IAM policies.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>Added the missing IAM permissions, then returned to attach DynamoDB access to the Lambda role. The key
+              lesson was that every AWS service connection needs explicit permission.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>Counter showed N/A during local testing</h3>
+            <p>After updating the counter URL and testing locally, the page displayed N/A instead of the real count. The
+              browser request was blocked because local development was not an allowed origin.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>Kept CORS restricted to <strong>https://pavankrishna.dev</strong> and tested the counter on the deployed
+              site after pushing to GitHub. This prevents other websites from calling the API and inflating the count.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>API returned 404 Not Found on first test</h3>
+            <p>The API Gateway invoke URL returned <em>{"message": "Not Found"}</em> because the GET /count route was
+              not yet attached to the Lambda integration.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>Attached the Lambda integration to the route, waited briefly for the change to apply, and retested the
+              full /count URL. The endpoint then returned the visitor count correctly.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Financial Breakdown</span>
+      </div>
+      <h2>What does this actually cost?</h2>
+      <p class="section-intro">Serverless pricing is based on usage. For a personal portfolio, this project is
+        effectively free.</p>
+
+      <div class="cost-panel">
+        <table class="cost-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>Free tier allowance</th>
+              <th>Monthly cost</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>AWS Lambda</td>
+              <td>1 million requests per month plus 400,000 GB-seconds compute</td>
+              <td>~€0</td>
+            </tr>
+            <tr>
+              <td>API Gateway HTTP API</td>
+              <td>1 million API calls per month for the first 12 months</td>
+              <td>~€0</td>
+            </tr>
+            <tr>
+              <td>DynamoDB</td>
+              <td>25 GB storage plus 25 read and write capacity units</td>
+              <td>€0</td>
+            </tr>
+            <tr>
+              <td>IAM</td>
+              <td>Always free</td>
+              <td>€0</td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td>Real-time serverless counter, available on demand</td>
+              <td>~€0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cost-note">At typical portfolio traffic levels, the cost remains near zero even beyond the free tier.</p>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Key Technical Takeaways</span>
+      </div>
+      <h2>What I learned from this build</h2>
+
+      <div class="learning-grid">
+        <article class="learning-card">
+          <span>⚡</span>
+          <h3>Serverless removes server maintenance</h3>
+          <p>Lambda scales from zero and only runs when called. The mental model changes from managing servers to
+            composing managed services.</p>
+        </article>
+        <article class="learning-card">
+          <span>🔒</span>
+          <h3>CORS is a security feature</h3>
+          <p>Restricting API access to the portfolio domain prevents other websites from calling the endpoint and
+            manipulating the count.</p>
+        </article>
+        <article class="learning-card">
+          <span>⚛️</span>
+          <h3>Atomic operations matter</h3>
+          <p>DynamoDB's atomic update prevents race conditions. Even small projects should be correct under concurrent
+            requests.</p>
+        </article>
+        <article class="learning-card">
+          <span>🔗</span>
+          <h3>IAM connects AWS services</h3>
+          <p>Lambda cannot access DynamoDB without explicit IAM permission. Permissions are the glue between AWS
+            services.</p>
+        </article>
+        <article class="learning-card">
+          <span>🧪</span>
+          <h3>Test each layer separately</h3>
+          <p>Testing Lambda first, then API Gateway, made it easier to locate errors before connecting the full flow.</p>
+        </article>
+        <article class="learning-card">
+          <span>💰</span>
+          <h3>Low-scale cloud can be cheap</h3>
+          <p>For a portfolio visitor counter, Lambda and DynamoDB stay comfortably within free-tier style usage.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="common.js"></script>
+  <script src="case-study.js"></script>
+</body>
+
+</html>

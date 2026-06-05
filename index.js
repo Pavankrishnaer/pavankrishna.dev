@@ -204,7 +204,7 @@ function buildPuzzle() {
     });
   });
 
-  // Bank drag events — accept chips dragged back from slots
+  // Bank drag events accept chips dragged back from slots.
   bank.ondragover = e => { e.preventDefault(); bank.classList.add('drag-over-bank'); };
   bank.ondragleave = () => bank.classList.remove('drag-over-bank');
   bank.ondrop = e => {
@@ -280,7 +280,7 @@ function checkPuzzle() {
     });
     feedback.innerHTML = '🎉 Perfect! You think like a cloud engineer.<br><a href="#" onclick="openHireModal();return false;" class="puzzle-win-link">Now let&rsquo;s talk →</a>';
     feedback.className = 'puzzle-feedback win';
-    // Win message stays until reset — no timeout
+    // Win message stays until reset. No timeout.
   } else {
     placed.forEach((svc, i) => {
       const chip = slots[i].querySelector('.p-chip');
@@ -305,7 +305,7 @@ const obs = new IntersectionObserver(entries => {
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 // VISITOR COUNTER
 // Replace this URL with your real AWS Lambda endpoint after deployment
-const COUNTER_URL = ''; // e.g. 'https://xxxxx.execute-api.eu-central-1.amazonaws.com/visits'
+const COUNTER_URL = 'https://zjcq59af07.execute-api.eu-central-1.amazonaws.com/count';
 async function loadVisitorCount() {
   const el = document.getElementById('visitorCount');
   if (!el) return;
@@ -319,7 +319,7 @@ async function loadVisitorCount() {
       el.textContent = '247';
     }
   } catch {
-    el.textContent = '—';
+    el.textContent = 'N/A';
   }
 }
 loadVisitorCount();

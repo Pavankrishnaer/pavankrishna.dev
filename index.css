@@ -1424,9 +1424,17 @@ body {
   opacity: 0.9;
   transition: all 0.2s;
   box-sizing: border-box;
+  cursor: pointer;
+  touch-action: manipulation;
 }
 
 .slot-drop.drag-over {
+  border-color: var(--blue);
+  background: var(--blue-light);
+  opacity: 1;
+}
+
+.slot-drop.tap-target {
   border-color: var(--blue);
   background: var(--blue-light);
   opacity: 1;
@@ -1473,11 +1481,20 @@ body {
   align-items: center;
   gap: 0.4rem;
   box-shadow: var(--shadow-sm);
+  touch-action: manipulation;
 }
 
 .p-chip:hover {
   border-color: var(--blue);
   color: var(--blue);
+  transform: translateY(-2px);
+}
+
+.p-chip.selected {
+  background: var(--blue-light);
+  border-color: var(--blue);
+  color: var(--blue);
+  box-shadow: var(--shadow-blue);
   transform: translateY(-2px);
 }
 

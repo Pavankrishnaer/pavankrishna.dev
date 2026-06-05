@@ -80,12 +80,98 @@ if (termCard) termObs.observe(termCard);
 const correctOrder = ['Route 53', 'CloudFront', 'S3 Bucket', 'ACM (SSL)', 'IAM Policy'];
 const icons = { 'Route 53': '🌍', 'CloudFront': '⚡', 'S3 Bucket': '🪣', 'ACM (SSL)': '🔒', 'IAM Policy': '🔐' };
 let dragItem = null;
-let dragSource = null; // 'bank' or the slot-drop element it came from
+let selectedChip = null;
+
+function getChipSource(chip) {
+  const parent = chip.parentElement;
+  return parent && parent.classList.contains('slot-drop') ? parent : 'bank';
+}
+
+function resetSlot(slot) {
+  slot.textContent = 'drop here';
+  slot.classList.remove('filled');
+}
+
+function setTapTargets(active) {
+  document.querySelectorAll('.slot-drop').forEach(slot => {
+    slot.classList.toggle('tap-target', active);
+  });
+}
+
+function clearSelectedChip() {
+  if (selectedChip) {
+    selectedChip.classList.remove('selected');
+    selectedChip.setAttribute('aria-pressed', 'false');
+  }
+  selectedChip = null;
+  setTapTargets(false);
+}
+
+function selectChip(chip) {
+  if (puzzleSolved || chip.classList.contains('correct')) return;
+
+  if (selectedChip === chip) {
+    clearSelectedChip();
+    return;
+  }
+
+  clearSelectedChip();
+  selectedChip = chip;
+  selectedChip.classList.add('selected');
+  selectedChip.setAttribute('aria-pressed', 'true');
+  setTapTargets(true);
+}
+
+function moveChipToSlot(chip, slot) {
+  const bank = document.getElementById('puzzleBank');
+  const source = getChipSource(chip);
+  const existingChip = slot.querySelector('.p-chip');
+
+  if (existingChip === chip) {
+    clearSelectedChip();
+    return;
+  }
+
+  if (source && source !== 'bank') {
+    resetSlot(source);
+  }
+
+  if (existingChip) {
+    if (source && source !== 'bank') {
+      source.textContent = '';
+      source.classList.add('filled');
+      source.appendChild(existingChip);
+    } else {
+      bank.appendChild(existingChip);
+    }
+  }
+
+  slot.textContent = '';
+  slot.classList.add('filled');
+  slot.appendChild(chip);
+  clearSelectedChip();
+  checkPuzzle();
+}
+
+function moveChipToBank(chip) {
+  const source = getChipSource(chip);
+  if (source === 'bank') {
+    clearSelectedChip();
+    return;
+  }
+
+  resetSlot(source);
+  document.getElementById('puzzleBank').appendChild(chip);
+  clearSelectedChip();
+  checkPuzzle();
+}
 
 function buildPuzzle() {
   const bank = document.getElementById('puzzleBank');
   const zone = document.getElementById('puzzleZone');
   const feedback = document.getElementById('puzzleFeedback');
+  clearSelectedChip();
+  dragItem = null;
   feedback.textContent = '';
   feedback.className = 'puzzle-feedback';
 
@@ -94,11 +180,11 @@ function buildPuzzle() {
   correctOrder.forEach((_, i) => {
     const slot = document.createElement('div');
     slot.className = 'puzzle-slot';
-    slot.innerHTML = `<div class="slot-num">${i + 1}</div><div class="slot-drop" data-index="${i}">drop here</div>`;
+    slot.innerHTML = `<div class="slot-num">${i + 1}</div><div class="slot-drop" data-index="${i}" role="button" tabindex="0" aria-label="Position ${i + 1}">drop here</div>`;
     zone.appendChild(slot);
   });
 
-  // Slot drag events — support swap + drop from bank
+  // Slot events support desktop drag/drop and mobile tap-to-place.
   zone.querySelectorAll('.slot-drop').forEach(slot => {
     slot.addEventListener('dragover', e => { e.preventDefault(); slot.classList.add('drag-over'); });
     slot.addEventListener('dragleave', () => slot.classList.remove('drag-over'));
@@ -106,49 +192,30 @@ function buildPuzzle() {
       e.preventDefault();
       slot.classList.remove('drag-over');
       if (!dragItem) return;
-
-      const existingChip = slot.querySelector('.p-chip');
-      if (existingChip === dragItem) return; // dropped on itself
-
-      // First, clear the source slot
-      if (dragSource && dragSource !== 'bank') {
-        dragSource.textContent = 'drop here';
-        dragSource.classList.remove('filled');
-      }
-
-      if (existingChip) {
-        // SWAP: move existing chip to source
-        if (dragSource === 'bank') {
-          document.getElementById('puzzleBank').appendChild(existingChip);
-        } else if (dragSource) {
-          dragSource.textContent = '';
-          dragSource.classList.add('filled');
-          dragSource.appendChild(existingChip);
-        }
-      }
-
-      // Place dragItem into target slot
-      slot.textContent = '';
-      slot.classList.add('filled');
-      slot.appendChild(dragItem);
-      checkPuzzle();
+      moveChipToSlot(dragItem, slot);
+    });
+    slot.addEventListener('click', () => {
+      if (selectedChip) moveChipToSlot(selectedChip, slot);
+    });
+    slot.addEventListener('keydown', e => {
+      if (!selectedChip || (e.key !== 'Enter' && e.key !== ' ')) return;
+      e.preventDefault();
+      moveChipToSlot(selectedChip, slot);
     });
   });
 
   // Bank drag events — accept chips dragged back from slots
-  bank.addEventListener('dragover', e => { e.preventDefault(); bank.classList.add('drag-over-bank'); });
-  bank.addEventListener('dragleave', () => bank.classList.remove('drag-over-bank'));
-  bank.addEventListener('drop', e => {
+  bank.ondragover = e => { e.preventDefault(); bank.classList.add('drag-over-bank'); };
+  bank.ondragleave = () => bank.classList.remove('drag-over-bank');
+  bank.ondrop = e => {
     e.preventDefault();
     bank.classList.remove('drag-over-bank');
     if (!dragItem) return;
-    if (dragSource && dragSource !== 'bank') {
-      dragSource.classList.remove('filled');
-      dragSource.textContent = 'drop here';
-    }
-    bank.appendChild(dragItem);
-    checkPuzzle();
-  });
+    moveChipToBank(dragItem);
+  };
+  bank.onclick = e => {
+    if (selectedChip && !e.target.closest('.p-chip')) moveChipToBank(selectedChip);
+  };
 
   // Shuffle chips into bank
   const shuffled = [...correctOrder].sort(() => Math.random() - 0.5);
@@ -160,25 +227,36 @@ function createChip(svc) {
   const chip = document.createElement('div');
   chip.className = 'p-chip';
   chip.draggable = true;
-  chip.innerHTML = icons[svc] + ' ' + svc;
+  chip.textContent = icons[svc] + ' ' + svc;
   chip.dataset.svc = svc;
+  chip.setAttribute('role', 'button');
+  chip.setAttribute('tabindex', '0');
+  chip.setAttribute('aria-pressed', 'false');
+  chip.setAttribute('aria-label', svc);
+  chip.addEventListener('click', event => {
+    event.stopPropagation();
+    selectChip(chip);
+  });
+  chip.addEventListener('keydown', event => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    selectChip(chip);
+  });
   chip.addEventListener('dragstart', () => {
+    clearSelectedChip();
     dragItem = chip;
-    const parentSlot = chip.parentElement;
-    dragSource = parentSlot.classList.contains('slot-drop') ? parentSlot : 'bank';
     setTimeout(() => chip.classList.add('dragging'), 0);
   });
   chip.addEventListener('dragend', () => {
     chip.classList.remove('dragging');
     dragItem = null;
-    dragSource = null;
   });
   return chip;
 }
 
 let puzzleSolved = false;
 
-function resetPuzzle() { puzzleSolved = false; buildPuzzle(); }
+function resetPuzzle() { puzzleSolved = false; clearSelectedChip(); buildPuzzle(); }
 
 function checkPuzzle() {
   if (puzzleSolved) return; // don't overwrite the win message
@@ -191,11 +269,13 @@ function checkPuzzle() {
 
   if (isCorrect) {
     puzzleSolved = true;
+    clearSelectedChip();
     slots.forEach(s => {
       const chip = s.querySelector('.p-chip');
       if (chip) {
         chip.classList.add('correct');
         chip.draggable = false; // prevent further dragging
+        chip.setAttribute('aria-disabled', 'true');
       }
     });
     feedback.innerHTML = '🎉 Perfect! You think like a cloud engineer.<br><a href="#" onclick="openHireModal();return false;" class="puzzle-win-link">Now let&rsquo;s talk →</a>';

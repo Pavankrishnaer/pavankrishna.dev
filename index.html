@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pavankrishna - Cloud Engineer</title>
+  <meta name="description"
+    content="AWS Cloud Engineer based in Germany with 8+ years QA background. Specialising in EC2, S3, Lambda, VPC, IAM, RDS and CloudWatch. Available for full-time roles and freelance projects.">
+  <meta property="og:title" content="Pavankrishna Ellore - AWS Cloud Engineer">
+  <meta property="og:description"
+    content="Building reliable, scalable cloud infrastructure on AWS. Quality-first mindset. Based in Germany.">
+  <meta property="og:image" content="https://pavankrishna.dev/og-image.png">
+  <meta property="og:url" content="https://pavankrishna.dev">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Pavankrishna Ellore - AWS Cloud Engineer">
+  <meta name="twitter:description" content="Building reliable, scalable cloud infrastructure on AWS.">
+  <meta name="twitter:image" content="https://pavankrishna.dev/og-image.png">
+  <link rel="canonical" href="https://pavankrishna.dev/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Pavankrishna Ellore Ramesh",
+      "url": "https://pavankrishna.dev",
+      "image": "https://pavankrishna.dev/photo.webp",
+      "jobTitle": "AWS Cloud Engineer",
+      "email": "mailto:pavankrishnaer@gmail.com",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Hannover",
+        "addressCountry": "DE"
+      },
+      "sameAs": [
+        "https://www.linkedin.com/in/pavankrishnaer/",
+        "https://github.com/Pavankrishnaer"
+      ],
+      "knowsAbout": [
+        "AWS",
+        "Cloud Infrastructure",
+        "Quality Assurance",
+        "Test Automation",
+        "CI/CD",
+        "Serverless"
+      ]
+    }
+  </script>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Funnel+Sans:wght@700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      document.documentElement.setAttribute('data-theme', saved || 'light');
+    })();
+  </script>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+
+  <!-- Scroll Progress -->
+  <div id="scrollProgress"></div>
+
+  <!-- Back to Top -->
+  <button id="backToTop" title="Back to top" aria-label="Back to top">↑</button>
+  <div id="site-nav"></div>
+
+  <!-- HERO -->
+  <section id="home">
+    <div class="hero">
+      <div class="hero-eyebrow">
+        <span class="live-dot"></span>
+        Open to opportunities · Based in Germany
+      </div>
+      <h1 class="hero-name">Pavankrishna</h1>
+      <div class="hero-role"><strong>AWS Cloud Engineer</strong></div>
+      <div class="hero-role">Cloud Infrastructure &amp; Automation</div>
+      <div class="hero-tagline">I don't just build systems. I make sure they hold up.</div>
+      <p class="hero-desc">
+        Building reliable, scalable cloud infrastructure on AWS, with a quality-first mindset.<br>
+        Because great infrastructure doesn't just work, it holds up.
+      </p>
+      <div class="hero-btns">
+        <a href="#projects" class="btn-primary">View My Work</a>
+        <a href="#" class="btn-secondary">Download CV</a>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-n stat-num" data-count="6" data-suffix="+">6+</div>
+          <div class="stat-l">AWS Services</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-n stat-num" data-count="8" data-suffix="+">8+</div>
+          <div class="stat-l">Years in Tech</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-n">CCP</div>
+          <div class="stat-l">In Progress</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ticker -->
+    <div class="ticker-wrap">
+      <div class="ticker-track">
+        <div class="t-item">🖥️ EC2</div>
+        <div class="t-item">🪣 S3</div>
+        <div class="t-item">🔐 IAM</div>
+        <div class="t-item">⚡ Lambda</div>
+        <div class="t-item">🌐 VPC</div>
+        <div class="t-item">📊 CloudWatch</div>
+        <div class="t-item">🗄️ RDS</div>
+        <div class="t-item">🔗 API Gateway</div>
+        <div class="t-item">🌍 Route 53</div>
+        <div class="t-item">🔒 ACM</div>
+        <div class="t-item">📬 SNS / SQS</div>
+        <div class="t-item">🖥️ EC2</div>
+        <div class="t-item">🪣 S3</div>
+        <div class="t-item">🔐 IAM</div>
+        <div class="t-item">⚡ Lambda</div>
+        <div class="t-item">🌐 VPC</div>
+        <div class="t-item">📊 CloudWatch</div>
+        <div class="t-item">🗄️ RDS</div>
+        <div class="t-item">🔗 API Gateway</div>
+        <div class="t-item">🌍 Route 53</div>
+        <div class="t-item">🔒 ACM</div>
+        <div class="t-item">📬 SNS / SQS</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section reveal" id="about">
+    <div class="sec-label">About</div>
+    <h2 class="sec-title">Cloud engineer with a<br><em>quality-first mindset.</em></h2>
+
+    <div class="about-grid">
+      <div class="about-body">
+        <p>I'm <strong>Pavankrishna Ellore Ramesh</strong>, an AWS Cloud Engineer based in Germany. My journey started
+          in software quality assurance, where I learned to think critically about systems: what breaks, why it breaks,
+          and how to prevent it.</p>
+        <p>I apply the same rigour to cloud infrastructure, prioritising resilient architectures, comprehensive
+          monitoring, and security from the outset. Unlike many engineers who focus solely on building, I ensure
+          solutions are robust and sustainable.</p>
+        <p>Currently working toward the <strong>Solutions Architect Associate</strong> certification and actively
+          transitioning into cloud engineering roles.</p>
+
+        <div class="timeline">
+          <div class="tl-row">
+            <div class="tl-year now">Now →</div>
+            <div>
+              <div class="tl-title">AWS Cloud Engineer</div>
+              <div class="tl-sub">Targeting cloud engineering roles</div>
+            </div>
+          </div>
+          <div class="tl-row">
+            <div class="tl-year">2026</div>
+            <div>
+              <div class="tl-title">AWS Hands-On Foundations</div>
+              <div class="tl-sub">Launched EC2 instances, configured S3 buckets, set up IAM policies, built VPCs,
+                deployed Lambda functions, monitored with CloudWatch.</div>
+            </div>
+          </div>
+          <div class="tl-row">
+            <div class="tl-year">2017–2025</div>
+            <div>
+              <div class="tl-title">Software Test Automation Engineer</div>
+              <div class="tl-sub">Manual & automation testing, API testing, CI/CD pipelines, ISTQB certifications. Built
+                a solid foundation in systems thinking.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <div class="photo-card">
+          <div class="photo-area">
+            <img src="photo.webp" alt="Pavankrishna Ellore Ramesh" class="profile-photo" width="1200" height="1500"
+              loading="lazy" decoding="async">
+          </div>
+          <div class="photo-footer">
+            <div>
+              <div class="photo-name">Pavankrishna E.R.</div>
+              <div class="photo-role">AWS Cloud Engineer</div>
+            </div>
+            <div class="avail-pill">
+              <span class="g-dot"></span>
+              Available
+            </div>
+          </div>
+          <div class="lang-row">
+            <div class="lang-item">
+              <span class="lang-flag">🇬🇧</span>
+              <div>
+                <div class="lang-name">English</div>
+                <div class="lang-level">Fluent</div>
+              </div>
+              <div class="lang-bar">
+                <div class="lang-fill lang-fill-full"></div>
+              </div>
+            </div>
+            <div class="lang-item">
+              <span class="lang-flag">🇩🇪</span>
+              <div>
+                <div class="lang-name">German</div>
+                <div class="lang-level">Intermediate</div>
+              </div>
+              <div class="lang-bar">
+                <div class="lang-fill lang-fill-intermediate"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <div class="section-full reveal" id="skills">
+    <div class="section-full-inner">
+      <div class="sec-label">Skills</div>
+      <h2 class="sec-title">AWS Services I work with</h2>
+
+      <div class="aws-grid">
+        <div class="aws-card">
+          <div class="aws-card-icon">🖥️</div>
+          <div class="aws-card-name">EC2 & S3</div>
+          <div class="aws-card-detail">Launching instances, configuring storage, static website hosting, lifecycle
+            policies.</div>
+          <div class="aws-badge b-familiar">Familiar</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-card-icon">🔐</div>
+          <div class="aws-card-name">IAM & Security</div>
+          <div class="aws-card-detail">Users, roles, policies, least-privilege access, MFA, security best practices.
+          </div>
+          <div class="aws-badge b-familiar">Familiar</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-card-icon">⚡</div>
+          <div class="aws-card-name">Lambda / Serverless</div>
+          <div class="aws-card-detail">Event-driven functions, API Gateway integration, serverless architecture
+            patterns.</div>
+          <div class="aws-badge b-learning">Learning</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-card-icon">🌐</div>
+          <div class="aws-card-name">VPC & Networking</div>
+          <div class="aws-card-detail">Subnets, route tables, security groups, NACLs, internet & NAT gateways.</div>
+          <div class="aws-badge b-learning">Learning</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-card-icon">📊</div>
+          <div class="aws-card-name">CloudWatch</div>
+          <div class="aws-card-detail">Metrics, alarms, log groups, dashboards for monitoring infrastructure health.
+          </div>
+          <div class="aws-badge b-familiar">Familiar</div>
+        </div>
+        <div class="aws-card">
+          <div class="aws-card-icon">🗄️</div>
+          <div class="aws-card-name">RDS / Databases</div>
+          <div class="aws-card-detail">Managed relational databases, Multi-AZ deployments, automated backups.</div>
+          <div class="aws-badge b-learning">Learning</div>
+        </div>
+      </div>
+
+      <div class="qa-card">
+        <div class="qa-label">Also bring from QA background</div>
+        <button class="qa-toggle" type="button" aria-expanded="false" aria-controls="qaColumns">
+          <span>Also bring from QA background</span>
+          <span class="qa-toggle-icon" aria-hidden="true">⌄</span>
+        </button>
+        <div class="qa-columns" id="qaColumns">
+          <div class="qa-col">
+            <div class="qa-col-title">Testing</div>
+            <span class="qa-tag">Automation Testing</span>
+            <span class="qa-tag">API Testing</span>
+            <span class="qa-tag">CI/CD</span>
+          </div>
+          <div class="qa-col">
+            <div class="qa-col-title">Tools</div>
+            <span class="qa-tag">Ranorex Studio</span>
+            <span class="qa-tag">Postman</span>
+            <span class="qa-tag">VSCode</span>
+            <span class="qa-tag">Playwright</span>
+            <span class="qa-tag">Leapwork</span>
+          </div>
+          <div class="qa-col">
+            <div class="qa-col-title">Process & DevOps</div>
+            <span class="qa-tag">JIRA</span>
+            <span class="qa-tag">Agile - SCRUM</span>
+            <span class="qa-tag">Confluence</span>
+            <span class="qa-tag">Docker</span>
+            <span class="qa-tag">Kubernetes</span>
+            <span class="qa-tag">Terraform</span>
+          </div>
+          <div class="qa-col">
+            <div class="qa-col-title">Languages</div>
+            <span class="qa-tag">C#</span>
+            <span class="qa-tag">Python</span>
+            <span class="qa-tag">Linux</span>
+            <span class="qa-tag">SQL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <section class="section reveal" id="projects">
+    <div class="sec-label">Projects</div>
+    <h2 class="sec-title">Hands-on AWS Work</h2>
+
+    <!-- PROJECT 01 -->
+    <div class="proj-featured">
+      <div class="proj-feat-left">
+        <div class="proj-num">Project 01 · AWS Amplify Deployment</div>
+        <div class="proj-name">This Portfolio,<br>Hosted on AWS</div>
+        <p class="proj-desc">Deployed using AWS Amplify to establish a fully managed, Git-driven CI/CD workflow. By
+          connecting directly to the source repository, the platform automates environment compilation, handles
+          edge-caching distribution, and provisions managed SSL/TLS certificates seamlessly.</p>
+        <div class="proj-tags">
+          <span class="proj-tag">AWS Amplify</span>
+          <span class="proj-tag">CI/CD Pipeline</span>
+          <span class="proj-tag">Git Integration</span>
+          <span class="proj-tag">Edge Networking</span>
+          <span class="proj-tag">ACM (SSL)</span>
+        </div>
+      </div>
+      <div class="proj-feat-right">
+        <div class="arch-label">Amplify Deployment Flow</div>
+        <div class="arch-flow">
+          <div class="arch-item"><span class="arch-svc">Git Push</span><span class="arch-arr">→</span><span
+              class="arch-info">I push code updates to the main repository branch.</span></div>
+          <div class="arch-item"><span class="arch-svc">Automated Build</span><span class="arch-arr">→</span><span
+              class="arch-info">AWS Amplify triggers automatically, provisioning an isolated build environment.</span>
+          </div>
+          <div class="arch-item"><span class="arch-svc">Global Deploy</span><span class="arch-arr">→</span><span
+              class="arch-info">Content updates are dynamically served across global edge CDN locations.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 02 -->
+    <div class="proj-grid-2">
+      <div class="proj-card proj-card-wide">
+        <div class="pc-num">Project 02 · Capstone</div>
+        <div class="pc-name">ELLORE - Serverless E-Commerce Platform on AWS</div>
+        <div class="pc-wide-body">
+          <div>
+            <p class="pc-desc">A production-grade serverless e-commerce platform built on AWS using 26 services and
+              130 resources, fully automated with Terraform Infrastructure as Code. Features user authentication
+              (Cognito), API protection (WAF), real-time notifications (SNS/SES), and end-to-end observability
+              (CloudWatch + X-Ray). Deployed in eu-central-1 for GDPR compliance. Total cost: under $25.</p>
+            <div class="pc-tags">
+              <span class="pc-tag">Terraform</span>
+              <span class="pc-tag">AWS Lambda</span>
+              <span class="pc-tag">CloudFront</span>
+              <span class="pc-tag">DynamoDB</span>
+              <span class="pc-tag">API Gateway</span>
+              <span class="pc-tag">Cognito</span>
+              <span class="pc-tag">WAF</span>
+              <span class="pc-tag">Python</span>
+              <span class="pc-tag">Serverless</span>
+              <span class="pc-tag">IaC</span>
+            </div>
+            <div class="pc-actions">
+              <span class="pc-badge-live">⚡ Live</span>
+            </div>
+            <div class="pc-actions">
+              <a href="https://db9eznxxz6xrn.cloudfront.net/" target="_blank" rel="noopener noreferrer"
+                class="pc-link">Live Project →</a>
+              <a href="https://github.com/Pavankrishnaer/AWS-Learning/tree/main/Capstone%20Project" target="_blank"
+                rel="noopener noreferrer" class="pc-link">View on GitHub →</a>
+            </div>
+          </div>
+          <div class="pc-highlights" aria-label="Capstone project highlights">
+            <div class="pc-highlight">
+              <span>Fully Serverless</span>
+              <strong>5 Lambda functions handling all business logic - zero server management, auto-scales to 1000+
+                concurrent executions.</strong>
+            </div>
+            <div class="pc-highlight">
+              <span>Enterprise Security</span>
+              <strong>Cognito JWT authentication + WAF (OWASP Top 10) + Secrets Manager + least-privilege IAM - security
+                enforced at every layer.</strong>
+            </div>
+            <div class="pc-highlight">
+              <span>100% Infrastructure as Code</span>
+              <strong>21 Terraform files - entire platform destroyed and rebuilt from scratch in under 5
+                minutes.</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PROJECT 03 -->
+      <div class="proj-card">
+        <div class="pc-num">Project 03 · Networking Tool</div>
+        <div class="pc-name">VPC Subnet Calculator</div>
+
+        <p class="pc-desc">A browser-based tool to plan and visualise AWS VPC architectures. Input a CIDR block and it
+          instantly calculates subnets, available IPs, host ranges and AWS reserved addresses, with multi-AZ layout
+          recommendations.</p>
+        <div class="pc-tags">
+          <span class="pc-tag">VPC</span>
+          <span class="pc-tag">Networking</span>
+          <span class="pc-tag">CIDR</span>
+          <span class="pc-tag">JavaScript</span>
+          <span class="pc-tag">S3 Hosted</span>
+        </div>
+        <div class="pc-actions">
+          <span class="pc-badge-live">⚡ Live</span>
+        </div>
+        <div class="pc-actions">
+          <a href="https://pavankrishnaer.github.io/vpc-calculator/" target="_blank" rel="noopener noreferrer"
+            class="pc-link">Live Tool →</a>
+          <a href="https://github.com/Pavankrishnaer/vpc-calculator" target="_blank" rel="noopener noreferrer"
+            class="pc-link">View on GitHub →</a>
+        </div>
+      </div>
+
+      <!-- PROJECT 04 -->
+        <div class="proj-card">
+          <div class="pc-num">Project 04 · Serverless</div>
+          <div class="pc-name">Serverless Contact Form</div>
+          <p class="pc-desc">A serverless backend using Lambda + API Gateway + SES. No servers to manage, scales
+            automatically, costs near zero.</p>
+          <div class="pc-tags">
+            <span class="pc-tag">Lambda</span>
+            <span class="pc-tag">API Gateway</span>
+            <span class="pc-tag">SES</span>
+            <span class="pc-tag">Python</span>
+          </div>
+        </div>
+
+      <!-- PROJECT 05 -->
+      <div class="proj-card">
+        <div class="pc-num">Project 05 · Serverless</div>
+        <div class="pc-name">Serverless Visitor Counter</div>
+        <p class="pc-desc">A fully serverless visitor counter powering this portfolio. Each page load triggers an API
+          Gateway endpoint that invokes a Lambda function to atomically increment a DynamoDB counter and return the
+          total. CORS-enabled, costs near zero.</p>
+        <div class="pc-tags">
+          <span class="pc-tag">Lambda</span>
+          <span class="pc-tag">API Gateway</span>
+          <span class="pc-tag">DynamoDB</span>
+          <span class="pc-tag">Python</span>
+          <span class="pc-tag">IAM</span>
+        </div>
+        <div class="pc-actions">
+          <a href="https://github.com/Pavankrishnaer/aws-serverless-visitor-counter" target="_blank"
+            rel="noopener noreferrer" class="pc-link">View on GitHub →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CERTIFICATIONS -->
+  <div class="section-full section-full-compact-bottom reveal" id="certs">
+    <div class="section-full-inner">
+      <div class="sec-label">Credentials</div>
+      <h2 class="sec-title">Certifications</h2>
+
+      <div class="cert-group-label">☁️ AWS Cloud</div>
+      <div class="certs-grid certs-grid-spaced">
+        <div class="cert-card">
+          <div class="cert-icon">☁️</div>
+          <div class="cert-org">Amazon Web Services</div>
+          <div class="cert-name">AWS Certified Cloud Practitioner</div>
+          <div class="cert-tagline">Validates core AWS services, cloud concepts and pricing fundamentals.</div>
+          <div class="cert-pill p-progress">In Progress</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">🏗️</div>
+          <div class="cert-org">Amazon Web Services</div>
+          <div class="cert-name">AWS Solutions Architect Associate</div>
+          <div class="cert-tagline">Designing resilient, scalable and cost-optimised cloud architectures.</div>
+          <div class="cert-pill p-planned">Planned</div>
+        </div>
+      </div>
+
+      <div class="cert-group-label">🧪 Software Testing</div>
+      <div class="certs-grid certs-grid-spaced">
+        <div class="cert-card">
+          <div class="cert-icon">🧪</div>
+          <div class="cert-org">ISTQB</div>
+          <div class="cert-name">Certified Tester Foundation Level</div>
+          <div class="cert-tagline">Formal grounding in software testing principles, techniques and processes.</div>
+          <div class="cert-pill p-earned">Earned</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">🤖</div>
+          <div class="cert-org">ISTQB Advanced Level</div>
+          <div class="cert-name">Test Automation Engineer v2.0</div>
+          <div class="cert-tagline">Strengthens CI/CD pipeline thinking, directly applicable to AWS DevOps workflows.
+          </div>
+          <div class="cert-pill p-earned">Earned</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">📋</div>
+          <div class="cert-org">ISTQB Advanced Level</div>
+          <div class="cert-name">Test Management v3.0</div>
+          <div class="cert-tagline">Builds leadership and process thinking, valuable for managing cloud delivery teams.
+          </div>
+          <div class="cert-pill p-earned">Earned</div>
+        </div>
+        <div class="cert-card">
+          <div class="cert-icon">🛠️</div>
+          <div class="cert-org">Ranorex</div>
+          <div class="cert-name">Ranorex Studio Certification</div>
+          <div class="cert-tagline">Hands-on automation tooling experience that bridges QA and engineering workflows.
+          </div>
+          <div class="cert-pill p-earned">Earned</div>
+        </div>
+      </div>
+
+      <div class="cert-group-label">🔄 Agile & Process</div>
+      <div class="certs-grid">
+        <div class="cert-card">
+          <div class="cert-icon">🔄</div>
+          <div class="cert-org">Scrum.org</div>
+          <div class="cert-name">PSM I: Professional Scrum Master</div>
+          <div class="cert-tagline">Every AWS cloud team works in Agile. This proves I can operate and lead within it.
+          </div>
+          <div class="cert-pill p-earned">Earned</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EDUCATION -->
+  <div class="section-full section-full-compact-top reveal" id="education">
+    <div class="section-full-inner">
+      <div class="sec-label">Academic Background</div>
+      <h2 class="sec-title">Education</h2>
+      <div class="edu-grid">
+        <div class="edu-card">
+          <div class="edu-icon">🎓</div>
+          <div class="edu-body">
+            <div class="edu-degree">Master of Engineering in Information Technology</div>
+            <div class="edu-school">SRH University of Applied Sciences, Heidelberg, Germany</div>
+            <div class="edu-meta"><span class="edu-year">2016</span></div>
+            <div class="cert-pill cert-pill-auto p-earned">Completed</div>
+          </div>
+        </div>
+        <div class="edu-card">
+          <div class="edu-icon">🎓</div>
+          <div class="edu-body">
+            <div class="edu-degree">Bachelor of Engineering in Electrical &amp; Electronics</div>
+            <div class="edu-school">University of Bradford, Nilai, Malaysia</div>
+            <div class="edu-meta"><span class="edu-year">2011</span></div>
+            <div class="cert-pill cert-pill-auto p-earned">Completed</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <!-- CONTACT -->
+  <section id="contact" class="contact-section reveal">
+    <div id="cssBubbles"></div>
+    <div class="contact-hero contact-layer">
+      <div class="sec-label contact-label">Contact</div>
+      <h2 class="contact-big">Let's build<br><em>something solid.</em></h2>
+      <p class="contact-sub">Open to AWS cloud engineering roles, freelance cloud projects, and consulting. I respond
+        within 24 hours.</p>
+      <div class="contact-email-copy" title="Email me or copy address">
+        <a id="emailText" class="email-link" href="mailto:pavankrishnaer@gmail.com"
+          aria-label="Email pavankrishnaer@gmail.com" data-full-email="pavankrishnaer@gmail.com"
+          data-short-email="pavankrishnaer@gmail"></a>
+        <button id="emailCopyHint" class="copy-hint" type="button" onclick="copyEmail()">Click to copy</button>
+      </div>
+      <div class="contact-links">
+        <a href="https://www.linkedin.com/in/pavankrishnaer/" target="_blank" rel="noopener noreferrer"
+          class="c-chip">💼 LinkedIn</a>
+        <a href="https://github.com/Pavankrishnaer" target="_blank" rel="noopener noreferrer" class="c-chip">💻
+          GitHub</a>
+        <a href="pavankrishna-cv.pdf" download="Pavankrishna_Ellore_CV.pdf" class="c-chip">📄 Resume</a>
+      </div>
+    </div>
+
+    <!-- Two col: Terminal + Puzzle -->
+    <div class="contact-two-col contact-layer">
+
+      <!-- LEFT: Terminal -->
+      <div class="terminal-card">
+        <div class="terminal-bar">
+          <span class="t-btn t-red"></span>
+          <span class="t-btn t-yellow"></span>
+          <span class="t-btn t-green"></span>
+          <span class="t-title">why-hire-pavan.sh</span>
+        </div>
+        <div class="terminal-body" id="terminalBody"></div>
+      </div>
+
+      <!-- RIGHT: Puzzle -->
+      <div class="puzzle-card">
+        <div class="puzzle-header">
+          <div class="puzzle-title">🧩 AWS Architecture Puzzle</div>
+          <div class="puzzle-sub">Drag the services into the correct order to deploy a static website on AWS</div>
+        </div>
+        <div class="puzzle-zone" id="puzzleZone"></div>
+        <div class="puzzle-bank" id="puzzleBank"></div>
+        <div class="puzzle-feedback" id="puzzleFeedback"></div>
+        <button class="puzzle-reset" id="puzzleReset" onclick="resetPuzzle()">↺ Reset</button>
+      </div>
+
+    </div>
+
+    <!-- Visitor counter below puzzles -->
+    <div class="visitor-counter-wrap">
+      <div class="visitor-counter">
+        <div class="visitor-pulse"></div>
+        <span><strong id="visitorCount">-</strong> people have visited this portfolio</span>
+      </div>
+    </div>
+  </section>
+  <div id="site-footer"></div>
+  <script src="common.js"></script>
+
+  <script src="index.js"></script>
+
+</body>
+
+</html>

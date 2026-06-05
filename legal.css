@@ -1,0 +1,94 @@
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+.page-wrap {
+  flex: 1;
+  max-width: 740px;
+  margin: 0 auto;
+  padding: 8rem 2rem 6rem;
+  width: 100%;
+}
+
+.page-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.6rem;
+}
+
+.page-title {
+  font-size: clamp(2rem, 4vw, 2.8rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.section {
+  margin-bottom: 2.5rem;
+}
+
+.section h2 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 0.8rem;
+  letter-spacing: -0.01em;
+}
+
+.section p {
+  font-size: 0.9rem;
+  color: var(--ink2);
+  line-height: 1.75;
+  margin-bottom: 0.6rem;
+}
+
+.section ul {
+  font-size: 0.9rem;
+  color: var(--ink2);
+  line-height: 1.75;
+  padding-left: 1.4rem;
+  margin-bottom: 0.6rem;
+}
+
+.section ul li {
+  margin-bottom: 0.3rem;
+}
+
+.section a {
+  color: var(--blue);
+  text-decoration: none;
+}
+
+.section a:hover {
+  text-decoration: underline;
+}
+
+.highlight-box {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1rem 1.4rem;
+  margin-top: 0.8rem;
+  font-size: 0.85rem;
+  color: var(--ink2);
+  line-height: 1.7;
+}

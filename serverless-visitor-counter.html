@@ -93,7 +93,8 @@
             <span>JSON response</span>
           </div>
         </div>
-        <p>Every visit triggers this serverless pipeline and returns the latest count without running a traditional backend server.</p>
+        <p>Every visit triggers this serverless pipeline and returns the latest count without running a traditional
+          backend server.</p>
       </div>
     </section>
 
@@ -112,7 +113,8 @@
         compute cost. No servers means less operational overhead.
       </p>
       <blockquote>
-        For a portfolio site with irregular traffic, serverless is a practical fit: available on demand, simple to scale,
+        For a portfolio site with irregular traffic, serverless is a practical fit: available on demand, simple to
+        scale,
         and extremely low cost at this size.
       </blockquote>
     </section>
@@ -122,13 +124,15 @@
         <span>Execution Timeline</span>
       </div>
       <h2>Step by step breakdown</h2>
-      <p class="section-intro">Here is the path from a static portfolio page to a working AWS-powered visitor counter.</p>
+      <p class="section-intro">Here is the path from a static portfolio page to a working AWS-powered visitor counter.
+      </p>
 
       <div class="timeline-grid">
         <article class="timeline-card">
           <div class="timeline-number">01</div>
           <h3>Created the DynamoDB table</h3>
-          <p>Created a table named <strong>visitor-counter</strong> with a partition key of <strong>id</strong>. DynamoDB
+          <p>Created a table named <strong>visitor-counter</strong> with a partition key of <strong>id</strong>.
+            DynamoDB
             works well here because the project only needs one record that stores the running count.</p>
         </article>
         <article class="timeline-card">
@@ -195,12 +199,6 @@ table = dynamodb.<span class="c-fn">Table</span>(<span class="c-str">'visitor-co
 
     <span class="c-key">return</span> {
         <span class="c-str">'statusCode'</span>: <span class="c-num">200</span>,
-        <span class="c-str">'headers'</span>: {
-            <span class="c-comment"># CORS: only allow requests from the portfolio domain.</span>
-            <span class="c-str">'Access-Control-Allow-Origin'</span>: <span class="c-str">'https://pavankrishna.dev'</span>,
-            <span class="c-str">'Access-Control-Allow-Methods'</span>: <span class="c-str">'GET'</span>,
-            <span class="c-str">'Content-Type'</span>: <span class="c-str">'application/json'</span>
-        },
         <span class="c-str">'body'</span>: json.<span class="c-fn">dumps</span>({<span class="c-str">'count'</span>: count})
     }
 </code>
@@ -247,7 +245,8 @@ table = dynamodb.<span class="c-fn">Table</span>(<span class="c-str">'visitor-co
           <div class="challenge-half solution">
             <span>Solution</span>
             <p>Kept CORS restricted to <strong>https://pavankrishna.dev</strong> and tested the counter on the deployed
-              site after pushing to GitHub. This prevents other websites from calling the API and inflating the count.</p>
+              site after pushing to GitHub. This prevents other websites from calling the API and inflating the count.
+            </p>
           </div>
         </article>
 
@@ -262,6 +261,39 @@ table = dynamodb.<span class="c-fn">Table</span>(<span class="c-str">'visitor-co
             <span>Solution</span>
             <p>Attached the Lambda integration to the route, waited briefly for the change to apply, and retested the
               full /count URL. The endpoint then returned the visitor count correctly.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>CORS error persisted even after setting headers in Lambda</h3>
+            <p>After deploying the Lambda function with CORS headers in the response, the portfolio still showed a CORS
+              error: <em>"No Access-Control-Allow-Origin header is present on the requested resource"</em>. The browser
+              was blocking the request even though the headers were set inside the Lambda code..</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>When CORS is configured at the API Gateway level, it overrides any CORS headers returned by the Lambda
+              function. The fix was two steps — first configure CORS in API Gateway (setting Allow-Origin, Allow-Headers
+              and Allow-Methods), then <strong>remove the CORS headers from the Lambda function entirely</strong> to
+              avoid the conflict. API Gateway now handles CORS, Lambda just returns the data.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>Counter still showed N/A after CORS was configured</h3>
+            <p>TEven after fixing CORS at the API Gateway level, the portfolio counter was still showing N/A. The
+              browser console showed a 404 error on a <strong>POST</strong> request to the /count endpoint</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>The JavaScript fetch call in index.js was using <strong>method: 'POST'</strong> but the API Gateway route
+              only accepts <strong>GET</strong> requests. Changing the fetch method from POST to GET resolved the 404
+              immediately. Always make sure the HTTP method in the frontend code matches the route configured in API
+              Gateway.</p>
           </div>
         </article>
       </div>
@@ -313,7 +345,8 @@ table = dynamodb.<span class="c-fn">Table</span>(<span class="c-str">'visitor-co
           </tbody>
         </table>
       </div>
-      <p class="cost-note">At typical portfolio traffic levels, the cost remains near zero even beyond the free tier.</p>
+      <p class="cost-note">At typical portfolio traffic levels, the cost remains near zero even beyond the free tier.
+      </p>
     </section>
 
     <section class="case-section reveal">
@@ -350,7 +383,8 @@ table = dynamodb.<span class="c-fn">Table</span>(<span class="c-str">'visitor-co
         <article class="learning-card">
           <span>🧪</span>
           <h3>Test each layer separately</h3>
-          <p>Testing Lambda first, then API Gateway, made it easier to locate errors before connecting the full flow.</p>
+          <p>Testing Lambda first, then API Gateway, made it easier to locate errors before connecting the full flow.
+          </p>
         </article>
         <article class="learning-card">
           <span>💰</span>

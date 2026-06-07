@@ -303,6 +303,134 @@ const obs = new IntersectionObserver(entries => {
   entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('on'); });
 }, { threshold: 0.07 });
 document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// CONTACT OPTIONS
+const contactTabs = [...document.querySelectorAll('[data-contact-view]')];
+const contactPanels = {
+  message: document.getElementById('messagePanel'),
+  calendar: document.getElementById('calendarPanel')
+};
+let calendlyInitAttempts = 0;
+
+function ensureCalendlyWidget() {
+  const widget = document.querySelector('.calendly-inline-widget');
+  if (!widget || widget.querySelector('iframe')) return;
+
+  if (window.Calendly && typeof window.Calendly.initInlineWidget === 'function') {
+    window.Calendly.initInlineWidget({
+      url: widget.dataset.url,
+      parentElement: widget
+    });
+    return;
+  }
+
+  if (!document.querySelector('script[data-calendly-widget]')) {
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    script.dataset.calendlyWidget = 'true';
+    script.addEventListener('load', ensureCalendlyWidget, { once: true });
+    document.head.appendChild(script);
+    return;
+  }
+
+  if (calendlyInitAttempts < 20) {
+    calendlyInitAttempts++;
+    setTimeout(ensureCalendlyWidget, 250);
+  }
+}
+
+function showContactView(view) {
+  contactTabs.forEach(tab => {
+    const isActive = tab.dataset.contactView === view;
+    tab.classList.toggle('active', isActive);
+    tab.setAttribute('aria-selected', String(isActive));
+    tab.tabIndex = isActive ? 0 : -1;
+  });
+
+  Object.entries(contactPanels).forEach(([name, panel]) => {
+    if (!panel) return;
+    const isActive = name === view;
+    panel.hidden = !isActive;
+    panel.classList.toggle('active', isActive);
+  });
+
+  if (view === 'calendar') ensureCalendlyWidget();
+}
+
+contactTabs.forEach((tab, index) => {
+  tab.addEventListener('click', () => showContactView(tab.dataset.contactView));
+  tab.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    const direction = event.key === 'ArrowRight' ? 1 : -1;
+    const nextTab = contactTabs[(index + direction + contactTabs.length) % contactTabs.length];
+    nextTab.focus();
+    showContactView(nextTab.dataset.contactView);
+  });
+});
+
+// Add the API Gateway endpoint here when the serverless contact form is deployed.
+const CONTACT_FORM_ENDPOINT = 'https://t1watjkak6.execute-api.eu-central-1.amazonaws.com/contact';
+const recruiterContactForm = document.getElementById('recruiterContactForm');
+const contactFormStatus = document.getElementById('contactFormStatus');
+
+function setContactFormStatus(message, type = '') {
+  if (!contactFormStatus) return;
+  contactFormStatus.textContent = message;
+  contactFormStatus.className = `contact-form-status${type ? ` ${type}` : ''}`;
+}
+
+if (recruiterContactForm) {
+  recruiterContactForm.addEventListener('submit', async event => {
+    event.preventDefault();
+
+    if (!recruiterContactForm.reportValidity()) return;
+    if (recruiterContactForm.elements.website.value) return;
+
+    const submitButton = recruiterContactForm.querySelector('.contact-submit');
+    const formData = new FormData(recruiterContactForm);
+    const payload = {
+      name: formData.get('name').trim(),
+      email: formData.get('email').trim(),
+      company: formData.get('company').trim(),
+      message: formData.get('message').trim()
+    };
+
+    submitButton.disabled = true;
+    setContactFormStatus(CONTACT_FORM_ENDPOINT ? 'Sending message...' : 'Opening your email app...');
+
+    if (!CONTACT_FORM_ENDPOINT) {
+      const subject = `Portfolio enquiry from ${payload.name}`;
+      const companyLine = payload.company ? `Company: ${payload.company}\n` : '';
+      const body = `Name: ${payload.name}\nEmail: ${payload.email}\n${companyLine}\n${payload.message}`;
+      window.location.href = `mailto:pavankrishnaer@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      setTimeout(() => {
+        submitButton.disabled = false;
+        setContactFormStatus('Your message is ready in your email app.', 'success');
+      }, 800);
+      return;
+    }
+
+    try {
+      const response = await fetch(CONTACT_FORM_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error(`Request failed with status ${response.status}`);
+
+      recruiterContactForm.reset();
+      setContactFormStatus('Message sent. I will reply within 24 hours.', 'success');
+    } catch {
+      setContactFormStatus('The message could not be sent. Please email me directly instead.', 'error');
+    } finally {
+      submitButton.disabled = false;
+    }
+  });
+}
+
 // VISITOR COUNTER
 // Replace this URL with your real AWS Lambda endpoint after deployment
 const COUNTER_URL = 'https://zjcq59af07.execute-api.eu-central-1.amazonaws.com/count';

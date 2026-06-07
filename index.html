@@ -622,6 +622,72 @@
       </div>
     </div>
 
+    <div class="contact-options contact-layer">
+      <div class="contact-option-tabs" role="tablist" aria-label="Contact options">
+        <button class="contact-option-tab active" id="messageTab" type="button" role="tab"
+          aria-selected="true" aria-controls="messagePanel" data-contact-view="message">
+          Write a message
+        </button>
+        <button class="contact-option-tab" id="calendarTab" type="button" role="tab"
+          aria-selected="false" aria-controls="calendarPanel" data-contact-view="calendar">
+          Schedule a call
+        </button>
+      </div>
+
+      <div class="contact-option-panel active" id="messagePanel" role="tabpanel" aria-labelledby="messageTab">
+        <div class="contact-panel-heading">
+          <span class="contact-panel-kicker">Direct message</span>
+          <h3>Tell me about the role or project</h3>
+          <p>Share a few details and I will respond within 24 hours.</p>
+        </div>
+
+        <form class="contact-form" id="recruiterContactForm" novalidate>
+          <div class="contact-form-row">
+            <div class="contact-field">
+              <label for="contactName">Name</label>
+              <input id="contactName" name="name" type="text" autocomplete="name" required>
+            </div>
+            <div class="contact-field">
+              <label for="contactEmail">Email</label>
+              <input id="contactEmail" name="email" type="email" autocomplete="email" required>
+            </div>
+          </div>
+          <div class="contact-field">
+            <label for="contactCompany">Company <span>Optional</span></label>
+            <input id="contactCompany" name="company" type="text" autocomplete="organization">
+          </div>
+          <div class="contact-field">
+            <label for="contactMessage">Message</label>
+            <textarea id="contactMessage" name="message" rows="6" required></textarea>
+          </div>
+          <div class="contact-field contact-honeypot" aria-hidden="true">
+            <label for="contactWebsite">Website</label>
+            <input id="contactWebsite" name="website" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <div class="contact-form-footer">
+            <button class="contact-submit" type="submit">Send message</button>
+            <p class="contact-form-status" id="contactFormStatus" role="status" aria-live="polite"></p>
+          </div>
+        </form>
+      </div>
+
+      <div class="contact-option-panel" id="calendarPanel" role="tabpanel" aria-labelledby="calendarTab" hidden>
+        <div class="contact-panel-heading">
+          <span class="contact-panel-kicker">Calendly</span>
+          <h3>Choose a convenient time</h3>
+          <p>Book a short conversation directly in the calendar below.</p>
+        </div>
+        <div class="calendly-frame">
+          <div class="calendly-inline-widget" data-url="https://calendly.com/pavankrishnaer"
+            style="min-width:320px;height:700px;"></div>
+        </div>
+        <p class="calendly-fallback">
+          Calendar not loading?
+          <a href="https://calendly.com/pavankrishnaer" target="_blank" rel="noopener noreferrer">Open Calendly</a>
+        </p>
+      </div>
+    </div>
+
     <!-- Two col: Terminal + Puzzle -->
     <div class="contact-two-col contact-layer">
 
@@ -660,7 +726,6 @@
   </section>
   <div id="site-footer"></div>
   <script src="common.js"></script>
-
   <script src="index.js"></script>
 
 </body>

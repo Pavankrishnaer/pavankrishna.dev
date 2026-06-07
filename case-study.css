@@ -502,6 +502,135 @@ blockquote {
   text-align: center;
 }
 
+.record-panel {
+  overflow-x: auto;
+  border: 1px solid var(--case-border);
+  border-radius: 18px;
+  background: var(--bg2);
+  box-shadow: var(--shadow-md);
+  margin-top: 1.6rem;
+}
+
+.record-table {
+  width: 100%;
+  min-width: 680px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.record-table th {
+  background: var(--bg3);
+  color: var(--muted);
+  font-family: 'Courier New', monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.record-table th,
+.record-table td {
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--case-border);
+}
+
+.record-table td {
+  color: var(--ink2);
+}
+
+.record-table td:first-child {
+  color: var(--blue);
+  font-family: 'Courier New', monospace;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.record-table td:nth-child(2) {
+  font-family: 'Courier New', monospace;
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.record-table tr:last-child td {
+  border-bottom: none;
+}
+
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.comparison-card {
+  border: 1px solid var(--case-border);
+  border-radius: 18px;
+  background: var(--case-card);
+  padding: 1.7rem;
+}
+
+.comparison-card.restricted {
+  border-top: 3px solid var(--case-error);
+}
+
+.comparison-card.available {
+  border-top: 3px solid var(--case-success);
+}
+
+.comparison-card h3 {
+  color: var(--ink);
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+.comparison-card ul {
+  display: grid;
+  gap: 0.75rem;
+  list-style: none;
+}
+
+.comparison-card li {
+  position: relative;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  padding-left: 1.1rem;
+}
+
+.comparison-card li::before {
+  content: "";
+  position: absolute;
+  top: 0.65em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--case-error);
+}
+
+.comparison-card.available li::before {
+  background: var(--case-success);
+}
+
+.explainer-panel {
+  margin-top: 1.8rem;
+  border: 1px solid var(--case-border-strong);
+  border-left: 4px solid var(--blue);
+  border-radius: 0 18px 18px 0;
+  background: var(--case-card-strong);
+  padding: 1.7rem 2rem;
+}
+
+.explainer-panel h3 {
+  color: var(--ink);
+  font-size: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.explainer-panel p:last-child {
+  margin-bottom: 0;
+}
+
 .code-panel {
   overflow-x: auto;
   border: 1px solid var(--case-border);
@@ -642,7 +771,8 @@ blockquote {
 
   .architecture-flow,
   .timeline-grid,
-  .learning-grid {
+  .learning-grid,
+  .comparison-grid {
     grid-template-columns: 1fr;
   }
 

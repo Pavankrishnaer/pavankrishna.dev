@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serverless Contact Form - Pavankrishna</title>
+  <meta name="description"
+    content="How I built a serverless contact form using AWS Lambda, API Gateway, Amazon SES, IAM, CORS, DKIM and DMARC.">
+  <meta property="og:title" content="Serverless Contact Form on AWS">
+  <meta property="og:description"
+    content="A technical breakdown of the Lambda, API Gateway and Amazon SES contact workflow behind pavankrishna.dev.">
+  <meta property="og:image" content="https://pavankrishna.dev/og-image.png">
+  <meta property="og:url" content="https://pavankrishna.dev/serverless-contact-form.html">
+  <meta property="og:type" content="article">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Serverless Contact Form on AWS">
+  <meta name="twitter:description"
+    content="Lambda, API Gateway, Amazon SES, IAM, CORS and domain authentication explained as a portfolio case study.">
+  <meta name="twitter:image" content="https://pavankrishna.dev/og-image.png">
+  <link rel="canonical" href="https://pavankrishna.dev/serverless-contact-form.html">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Funnel+Sans:wght@700;800&amp;display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="case-study.css">
+  <script>
+    (function () {
+      const saved = localStorage.getItem('theme');
+      document.documentElement.setAttribute('data-theme', saved || 'dark');
+    })();
+  </script>
+</head>
+
+<body>
+  <div id="site-nav"></div>
+
+  <div class="case-glow" aria-hidden="true"></div>
+
+  <header class="case-hero">
+    <a class="case-back" href="index.html#projects">← Back to projects</a>
+    <h1>Serverless Contact Form with <em>Lambda, API Gateway</em> and Amazon SES</h1>
+    <p>
+      The contact form on my portfolio uses a serverless email workflow on AWS. A recruiter can submit a message, I
+      receive it in my inbox, and the recruiter receives a confirmation from noreply@pavankrishna.dev.
+    </p>
+    <div class="service-pills" aria-label="Services and technologies used">
+      <span>AWS Lambda</span>
+      <span>API Gateway</span>
+      <span>Amazon SES</span>
+      <span>Python 3.12</span>
+      <span>IAM</span>
+      <span>CORS</span>
+      <span>DKIM &amp; DMARC</span>
+      <span>Namecheap DNS</span>
+      <span>Calendly</span>
+    </div>
+  </header>
+
+  <main class="case-main">
+    <section class="case-section case-section-wide reveal">
+      <div class="section-heading">
+        <span>Architecture Visualization</span>
+      </div>
+      <div class="architecture-card">
+        <div class="architecture-flow">
+          <div class="architecture-node">
+            <div class="architecture-icon">🧑‍💼</div>
+            <strong>Contact Form</strong>
+            <span>Recruiter submits</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">🌐</div>
+            <strong>API Gateway</strong>
+            <span>POST /contact</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node architecture-node-primary">
+            <div class="architecture-icon">⚡</div>
+            <strong>AWS Lambda</strong>
+            <span>Validate and process</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">📧</div>
+            <strong>Amazon SES</strong>
+            <span>Send two emails</span>
+          </div>
+          <div class="architecture-arrow">→</div>
+          <div class="architecture-node">
+            <div class="architecture-icon">📥</div>
+            <strong>Email Delivery</strong>
+            <span>Message and receipt</span>
+          </div>
+        </div>
+        <p>One form submission sends the message to my inbox and a confirmation to the recruiter without running a
+          permanent backend server.</p>
+      </div>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>The Strategic Why</span>
+      </div>
+      <h2>Why build this instead of using a form service?</h2>
+      <p>
+        Hosted form services can process contact messages quickly, but this portfolio is also a demonstration of my
+        cloud engineering work. Building the workflow on AWS gave me practical experience with Lambda execution roles,
+        API Gateway, CORS, SES domain verification and email authentication.
+      </p>
+      <p>
+        Amazon SES also lets the confirmation email come from <strong>noreply@pavankrishna.dev</strong> instead of an
+        unrelated third-party domain. That small detail makes the interaction feel more consistent and professional.
+      </p>
+      <blockquote>
+        The visible form is simple, but the workflow behind it demonstrates security, serverless integration, domain
+        authentication, error handling and production email delivery.
+      </blockquote>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Execution Timeline</span>
+      </div>
+      <h2>Step by step breakdown</h2>
+      <p class="section-intro">The implementation progressed from a verified SES identity to a complete contact and
+        scheduling experience.</p>
+
+      <div class="timeline-grid">
+        <article class="timeline-card">
+          <div class="timeline-number">01</div>
+          <h3>Verified an email address in SES</h3>
+          <p>I first verified my email address in Amazon SES. During sandbox testing, SES requires verified identities
+            before it can deliver messages.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">02</div>
+          <h3>Created the Lambda function</h3>
+          <p>I created a Python 3.12 function that validates the submitted fields, sends the message to me, and sends a
+            confirmation to the recruiter.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">03</div>
+          <h3>Granted SES permissions</h3>
+          <p>I updated the Lambda execution role with the permissions required to send email through SES. This allows
+            the function to call SES without using account credentials in the code.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">04</div>
+          <h3>Created the API Gateway routes</h3>
+          <p>I created a POST /contact route for form submissions and an OPTIONS /contact route for browser preflight
+            checks. Both routes connect to the Lambda function.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">05</div>
+          <h3>Configured CORS</h3>
+          <p>I restricted requests to pavankrishna.dev and allowed the content-type header plus the POST and OPTIONS
+            methods. The configuration is managed consistently at the API layer.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">06</div>
+          <h3>Verified the portfolio domain</h3>
+          <p>I verified pavankrishna.dev in SES so the workflow could send from noreply@pavankrishna.dev instead of a
+            personal Gmail address.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">07</div>
+          <h3>Added DKIM and DMARC records</h3>
+          <p>I added three DKIM CNAME records and one DMARC TXT record in Namecheap. These records help receiving mail
+            servers authenticate messages from the domain.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">08</div>
+          <h3>Moved SES out of sandbox mode</h3>
+          <p>I submitted the production access request with the portfolio use case. After approval, SES could send the
+            confirmation email to recruiters who had not been pre-verified.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">09</div>
+          <h3>Connected the portfolio interface</h3>
+          <p>I connected the form to API Gateway, added clear success and failure states, and included Calendly as an
+            alternative for recruiters who prefer to schedule a call.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>DNS and Email Authentication</span>
+      </div>
+      <h2>How DKIM and DMARC support delivery</h2>
+      <p>
+        SES generated three DKIM records for the domain. DKIM adds a cryptographic signature to outgoing email so the
+        receiving server can verify that the message genuinely came from pavankrishna.dev and was not modified during
+        delivery.
+      </p>
+      <p>
+        I also added a DMARC policy. DMARC tells receiving mail systems how to handle messages that fail domain
+        authentication and provides a clear policy for protecting the sender identity.
+      </p>
+
+      <div class="record-panel">
+        <table class="record-table">
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Host format</th>
+              <th>Purpose</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>CNAME</td>
+              <td>[generated-key-1]._domainkey</td>
+              <td>First DKIM signing record</td>
+            </tr>
+            <tr>
+              <td>CNAME</td>
+              <td>[generated-key-2]._domainkey</td>
+              <td>Second DKIM signing record</td>
+            </tr>
+            <tr>
+              <td>CNAME</td>
+              <td>[generated-key-3]._domainkey</td>
+              <td>Third DKIM signing record</td>
+            </tr>
+            <tr>
+              <td>TXT</td>
+              <td>_dmarc</td>
+              <td>DMARC authentication policy</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>
+        I copied the values generated by SES into Namecheap Advanced DNS. Namecheap appends the domain automatically,
+        so only the generated host portion belongs in the Host field. After DNS propagation, SES reported the domain
+        as verified.
+      </p>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>SES Access Modes</span>
+      </div>
+      <h2>Understanding sandbox and production access</h2>
+      <p>
+        New SES accounts begin in a restricted sandbox. This protects the service from abuse while the account owner
+        verifies identities and demonstrates a legitimate email use case.
+      </p>
+
+      <div class="comparison-grid">
+        <article class="comparison-card restricted">
+          <h3>Sandbox mode</h3>
+          <ul>
+            <li>Messages can only be sent to verified recipients.</li>
+            <li>Sending quotas are intentionally limited.</li>
+            <li>A public contact form cannot confirm arbitrary recruiter addresses.</li>
+            <li>The workflow is suitable for controlled testing.</li>
+          </ul>
+        </article>
+        <article class="comparison-card available">
+          <h3>Production access</h3>
+          <ul>
+            <li>Messages can be sent to normal recipient addresses.</li>
+            <li>AWS assigns production sending quotas to the account.</li>
+            <li>The confirmation workflow works for recruiters.</li>
+            <li>Domain authentication remains part of safe delivery.</li>
+          </ul>
+        </article>
+      </div>
+      <p>
+        My production request described a low-volume personal portfolio contact form. AWS approved the request after
+        the domain verification was complete.
+      </p>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>The Code</span>
+      </div>
+      <h2>Lambda function code</h2>
+      <p>
+        The function handles preflight requests, validates the submitted fields, sends two emails, and returns a clear
+        HTTP response to the frontend.
+      </p>
+
+      <div class="code-panel">
+        <div class="code-label">lambda_function.py - Python 3.12</div>
+        <code><span class="c-key">import</span> json
+<span class="c-key">import</span> boto3
+
+ses = boto3.<span class="c-fn">client</span>(<span class="c-str">'ses'</span>, region_name=<span class="c-str">'eu-central-1'</span>)
+
+RECIPIENT = <span class="c-str">'pavankrishnaer@gmail.com'</span>
+SENDER = <span class="c-str">'noreply@pavankrishna.dev'</span>
+
+<span class="c-key">def</span> <span class="c-fn">lambda_handler</span>(event, context):
+    method = event.<span class="c-fn">get</span>(<span class="c-str">'requestContext'</span>, {}).<span class="c-fn">get</span>(<span class="c-str">'http'</span>, {}).<span class="c-fn">get</span>(<span class="c-str">'method'</span>)
+
+    <span class="c-comment"># Return a successful response to the browser preflight check.</span>
+    <span class="c-key">if</span> method == <span class="c-str">'OPTIONS'</span>:
+        <span class="c-key">return</span> {<span class="c-str">'statusCode'</span>: <span class="c-num">200</span>, <span class="c-str">'body'</span>: <span class="c-str">''</span>}
+
+    <span class="c-key">try</span>:
+        body = json.<span class="c-fn">loads</span>(event.<span class="c-fn">get</span>(<span class="c-str">'body'</span>, <span class="c-str">'{}'</span>))
+        name = body.<span class="c-fn">get</span>(<span class="c-str">'name'</span>, <span class="c-str">''</span>).<span class="c-fn">strip</span>()
+        email = body.<span class="c-fn">get</span>(<span class="c-str">'email'</span>, <span class="c-str">''</span>).<span class="c-fn">strip</span>()
+        company = body.<span class="c-fn">get</span>(<span class="c-str">'company'</span>, <span class="c-str">''</span>).<span class="c-fn">strip</span>()
+        message = body.<span class="c-fn">get</span>(<span class="c-str">'message'</span>, <span class="c-str">''</span>).<span class="c-fn">strip</span>()
+
+        <span class="c-key">if not</span> name <span class="c-key">or not</span> email <span class="c-key">or not</span> message:
+            <span class="c-key">return</span> {
+                <span class="c-str">'statusCode'</span>: <span class="c-num">400</span>,
+                <span class="c-str">'body'</span>: json.<span class="c-fn">dumps</span>({<span class="c-str">'error'</span>: <span class="c-str">'Name, email and message are required.'</span>})
+            }
+
+        company_line = <span class="c-fn">f</span><span class="c-str">'Company: {company}\n'</span> <span class="c-key">if</span> company <span class="c-key">else</span> <span class="c-str">''</span>
+
+        <span class="c-comment"># Send the submitted message to my inbox.</span>
+        ses.<span class="c-fn">send_email</span>(
+            Source=SENDER,
+            Destination={<span class="c-str">'ToAddresses'</span>: [RECIPIENT]},
+            Message={
+                <span class="c-str">'Subject'</span>: {<span class="c-str">'Data'</span>: <span class="c-fn">f</span><span class="c-str">'Portfolio contact from {name}'</span>},
+                <span class="c-str">'Body'</span>: {
+                    <span class="c-str">'Text'</span>: {
+                        <span class="c-str">'Data'</span>: <span class="c-fn">f</span><span class="c-str">'Name: {name}\nEmail: {email}\n{company_line}\nMessage:\n{message}'</span>
+                    }
+                }
+            },
+            ReplyToAddresses=[email]
+        )
+
+        <span class="c-comment"># Confirm that the recruiter's message was received.</span>
+        ses.<span class="c-fn">send_email</span>(
+            Source=SENDER,
+            Destination={<span class="c-str">'ToAddresses'</span>: [email]},
+            Message={
+                <span class="c-str">'Subject'</span>: {<span class="c-str">'Data'</span>: <span class="c-str">'Thanks for reaching out to Pavankrishna'</span>},
+                <span class="c-str">'Body'</span>: {
+                    <span class="c-str">'Text'</span>: {
+                        <span class="c-str">'Data'</span>: <span class="c-fn">f</span><span class="c-str">'Hi {name},\n\nI received your message and will reply within 24 hours.\n\nYour message:\n{message}\n\nBest regards,\nPavankrishna Ellore Ramesh'</span>
+                    }
+                }
+            }
+        )
+
+        <span class="c-key">return</span> {
+            <span class="c-str">'statusCode'</span>: <span class="c-num">200</span>,
+            <span class="c-str">'body'</span>: json.<span class="c-fn">dumps</span>({<span class="c-str">'success'</span>: <span class="c-num">True</span>})
+        }
+
+    <span class="c-key">except</span> Exception <span class="c-key">as</span> error:
+        <span class="c-key">return</span> {
+            <span class="c-str">'statusCode'</span>: <span class="c-num">500</span>,
+            <span class="c-str">'body'</span>: json.<span class="c-fn">dumps</span>({<span class="c-str">'error'</span>: <span class="c-fn">str</span>(error)})
+        }
+</code>
+      </div>
+
+      <p>
+        <strong>Why use ReplyToAddresses?</strong> It lets me reply directly to the recruiter from the message in my
+        inbox, even though SES sends the original notification from noreply@pavankrishna.dev.
+      </p>
+
+      <div class="explainer-panel">
+        <h3>Why the OPTIONS preflight request matters</h3>
+        <p>
+          The portfolio and API Gateway use different domains. Before the browser sends the cross-origin POST request,
+          it sends an OPTIONS request to confirm that the API accepts the origin, header and method.
+        </p>
+        <p>
+          The API must return a successful response with the expected CORS policy. If that check fails, the browser
+          blocks the form submission before the POST request reaches the application logic.
+        </p>
+      </div>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Calendar Booking</span>
+      </div>
+      <h2>Why I added Calendly beside the form</h2>
+      <p class="section-intro">
+        Recruiters do not all prefer the same contact method. The portfolio therefore offers a written message form and
+        an embedded scheduling option.
+      </p>
+
+      <div class="timeline-grid">
+        <article class="timeline-card">
+          <div class="timeline-number">01</div>
+          <h3>Configured availability</h3>
+          <p>I created a meeting type, set the available hours, and connected the calendar so occupied times are not
+            offered.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">02</div>
+          <h3>Added the inline embed</h3>
+          <p>Calendly provides an inline widget that renders the scheduling experience inside the contact section
+            without forcing an immediate redirect.</p>
+        </article>
+        <article class="timeline-card">
+          <div class="timeline-number">03</div>
+          <h3>Used a tabbed contact layout</h3>
+          <p>The recruiter can switch between Write a message and Schedule a call. Calendly loads only when the calendar
+            option is selected, which reduces unnecessary third-party loading.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="case-section text-column reveal">
+      <div class="section-heading">
+        <span>Obstacles &amp; Solutions</span>
+      </div>
+      <h2>Challenges and how I fixed them</h2>
+
+      <div class="challenge-stack">
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>An email address was missing quotes</h3>
+            <p>CloudWatch reported a Python NameError because an email address had been written as if it were a variable
+              instead of a string.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>I wrapped the address in quotes and redeployed the function. The CloudWatch error identified the exact
+              line, which made the correction straightforward.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>The browser rejected the preflight response</h3>
+            <p>The form was blocked because the OPTIONS request did not receive a successful response before the
+              browser attempted the POST request.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>I added explicit OPTIONS handling and verified the API Gateway CORS configuration. The browser then
+              allowed the POST request to continue.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>CORS was configured in two places</h3>
+            <p>CORS headers existed in both Lambda responses and API Gateway, which produced inconsistent behaviour and
+              made troubleshooting harder.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>I established one source of truth for the CORS policy at the API layer and kept the application response
+              focused on status and data.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>Confirmation emails failed in sandbox mode</h3>
+            <p>SES rejected confirmation messages to recruiter addresses because those recipients were not verified
+              identities in the sandbox.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>I completed domain authentication and requested production access. After approval, the workflow could
+              send confirmations to normal recruiter addresses.</p>
+          </div>
+        </article>
+
+        <article class="challenge-card">
+          <div class="challenge-half problem">
+            <span>Problem</span>
+            <h3>The production access control was disabled</h3>
+            <p>The SES console did not allow a production request before the domain identity had completed
+              verification.</p>
+          </div>
+          <div class="challenge-half solution">
+            <span>Solution</span>
+            <p>I finished the DKIM verification for pavankrishna.dev. The production request became available after SES
+              recognised the verified domain.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Financial Breakdown</span>
+      </div>
+      <h2>What does this cost to operate?</h2>
+      <p class="section-intro">
+        The workflow is usage based. At the low message volume of a personal portfolio, the operational cost remains
+        close to zero.
+      </p>
+
+      <div class="cost-panel">
+        <table class="cost-table">
+          <thead>
+            <tr>
+              <th>Service</th>
+              <th>How it is used</th>
+              <th>Current impact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>AWS Lambda</td>
+              <td>Processes each contact request</td>
+              <td>Near €0</td>
+            </tr>
+            <tr>
+              <td>API Gateway</td>
+              <td>Exposes the HTTPS contact endpoint</td>
+              <td>Near €0</td>
+            </tr>
+            <tr>
+              <td>Amazon SES</td>
+              <td>Sends the notification and confirmation</td>
+              <td>Near €0</td>
+            </tr>
+            <tr>
+              <td>IAM</td>
+              <td>Controls service permissions</td>
+              <td>€0</td>
+            </tr>
+            <tr>
+              <td>Total</td>
+              <td>Low-volume serverless contact workflow</td>
+              <td>Near €0</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="cost-note">Actual charges depend on AWS pricing, region, account allowances and message volume.</p>
+    </section>
+
+    <section class="case-section reveal">
+      <div class="section-heading">
+        <span>Key Technical Takeaways</span>
+      </div>
+      <h2>What I learned from this build</h2>
+
+      <div class="learning-grid">
+        <article class="learning-card">
+          <span>✉️</span>
+          <h3>Email delivery has several trust layers</h3>
+          <p>Reliable delivery depends on verified identities, DKIM, DMARC, account access and correct sender
+            configuration.</p>
+        </article>
+        <article class="learning-card">
+          <span>🔍</span>
+          <h3>CloudWatch shortens debugging time</h3>
+          <p>The Lambda logs exposed concrete Python and SES errors, which was more effective than guessing from a
+            generic frontend failure.</p>
+        </article>
+        <article class="learning-card">
+          <span>🌐</span>
+          <h3>Preflight is a separate HTTP exchange</h3>
+          <p>The browser must approve the CORS policy through OPTIONS before it sends the actual cross-origin form
+            request.</p>
+        </article>
+        <article class="learning-card">
+          <span>🔒</span>
+          <h3>Service restrictions protect shared infrastructure</h3>
+          <p>The SES sandbox encourages domain verification and responsible sending practices before broader delivery
+            is enabled.</p>
+        </article>
+        <article class="learning-card">
+          <span>🏷️</span>
+          <h3>Domain email strengthens presentation</h3>
+          <p>A confirmation from the portfolio domain creates a more coherent experience than a message from an
+            unrelated sender address.</p>
+        </article>
+        <article class="learning-card">
+          <span>⚙️</span>
+          <h3>Each policy needs one source of truth</h3>
+          <p>Managing CORS in one layer prevents conflicting headers and makes the request flow easier to understand and
+            maintain.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div id="site-footer"></div>
+  <script src="common.js"></script>
+  <script src="case-study.js"></script>
+</body>
+
+</html>

@@ -270,14 +270,14 @@ table = dynamodb.<span class="c-fn">Table</span>(<span class="c-str">'visitor-co
             <h3>CORS error persisted even after setting headers in Lambda</h3>
             <p>After deploying the Lambda function with CORS headers in the response, the portfolio still showed a CORS
               error: <em>"No Access-Control-Allow-Origin header is present on the requested resource"</em>. The browser
-              was blocking the request even though the headers were set inside the Lambda code..</p>
+              was blocking the request even though the headers were set inside the Lambda code.</p>
           </div>
           <div class="challenge-half solution">
             <span>Solution</span>
             <p>When CORS is configured at the API Gateway level, it overrides any CORS headers returned by the Lambda
-              function. The fix was two steps — first configure CORS in API Gateway (setting Allow-Origin, Allow-Headers
-              and Allow-Methods), then <strong>remove the CORS headers from the Lambda function entirely</strong> to
-              avoid the conflict. API Gateway now handles CORS, Lambda just returns the data.</p>
+              function. I fixed the conflict in two steps. First, I configured Allow-Origin, Allow-Headers and
+              Allow-Methods in API Gateway. Then I <strong>removed the CORS headers from the Lambda function</strong>.
+              API Gateway now handles CORS while Lambda returns only the data.</p>
           </div>
         </article>
 
@@ -285,8 +285,8 @@ table = dynamodb.<span class="c-fn">Table</span>(<span class="c-str">'visitor-co
           <div class="challenge-half problem">
             <span>Problem</span>
             <h3>Counter still showed N/A after CORS was configured</h3>
-            <p>TEven after fixing CORS at the API Gateway level, the portfolio counter was still showing N/A. The
-              browser console showed a 404 error on a <strong>POST</strong> request to the /count endpoint</p>
+            <p>Even after fixing CORS at the API Gateway level, the portfolio counter was still showing N/A. The
+              browser console showed a 404 error on a <strong>POST</strong> request to the /count endpoint.</p>
           </div>
           <div class="challenge-half solution">
             <span>Solution</span>

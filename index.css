@@ -718,6 +718,23 @@ body {
   transition: border-color 0.28s ease, box-shadow 0.28s ease, transform 0.28s ease;
 }
 
+.project-platform-group {
+  margin-bottom: 1.15rem;
+  padding: 1.15rem;
+  border: 1px solid var(--card-border-strong);
+  border-radius: calc(var(--radius) + 4px);
+  background: color-mix(in srgb, var(--card-surface-tint) 38%, var(--bg));
+  box-shadow: var(--shadow-sm);
+}
+
+.project-platform-group .proj-featured {
+  margin-bottom: 1.15rem;
+}
+
+.project-tail-grid {
+  margin-top: 0;
+}
+
 [data-theme="light"] .proj-featured {
   background:
     radial-gradient(circle at 15% 0%, rgba(147, 197, 253, 0.28), transparent 38%),
@@ -885,6 +902,10 @@ body {
   background:
     linear-gradient(135deg, color-mix(in srgb, var(--blue) 9%, var(--card-surface)), var(--card-surface-soft));
   border-color: var(--card-border-strong);
+}
+
+.project-lead {
+  margin-bottom: 1.15rem;
 }
 
 .pc-wide-body {
@@ -2068,6 +2089,11 @@ body {
 
   .hero::before {
     width: calc(100vw - 2rem);
+  }
+
+  .project-platform-group {
+    padding: 0.65rem;
+    border-radius: var(--radius);
   }
 
   .about-grid>div:first-child {
